@@ -1,8 +1,8 @@
 # QuotesCircle
 I have developed this web applications for a client, each equipped with an efficient admin panel. Within the admin panel, administrators have the capability to choose images based on specific niches. Leveraging the power of Pixabay and Unsplash APIs, the applications seamlessly retrieve relevant images. Furthermore, administrators can effortlessly input any desired quote text, prompting the applications to generate visually captivating quote images.
 
-### Demo URL: 
-### Admin URL: 
+### Demo URL: https://quotescircle-532x.onrender.com
+### Admin URL: https://quotescircle-532x.onrender.com/admin/auth
 ```
 email: admin@gmail.com
 password: pass123
