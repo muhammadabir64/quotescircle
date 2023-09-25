@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard{% endblock title %}
+{% block style %}
+<style>
+
+</style>
+{% endblock style %}
+{% block content %}
+<div class="row">
+<div class="col-md-4 mx-auto">
+<div class="card card body">
+<div class="list-group">
+    <button type="button" class="list-group-item list-group-item-action bg-info text-center"><h5 class="m-0"><i class="far fa-chart-bar"></i> Site Statistics</h5></button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-quote-left"></i> Total Quotes: {{ totalQuotes }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-user-edit"></i> Total Authors: {{ totalAuthors }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-list-ol"></i> Total Topics: {{ totalTopics }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Total Users: {{ totalUsers }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-file-alt"></i> Total Pages: {{ totalPages }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="far fa-thumbs-up"></i> Total Votes: {{ totalVotes }}</button>
+    <button type="button" class="list-group-item list-group-item-action"><i class="fas fa-cloud-download-alt"></i> Total Downloads: {{ totalDownloads }}</button>
+</div>    
+</div>
+</div>
+<div class="col-12">
+<div class="row">
+<div class="col-md-6">
+<div class="card card-body">
+<h4 class="text-center text-info"><i class="fas fa-thumbs-up"></i>  Most Votes Quotes</h4>
+<hr class="mt-0">
+<div class="list-group">
+{% for quote in mostVotedQuotes %}
+    <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+      <img src="/media/quotes/{{ quote.quote_file }}" width="60px">
+      <p class="m-0">{{ quote.quote_text|truncate(70) }}</p>
+      <h4 class="text-primary m-0"><i class="fas fa-thumbs-up"></i> {{ quote.total_votes }}</h4>
+    </li>
+{% endfor %}
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card card-body">
+<h4 class="text-center text-info"><i class="fas fa-cloud-download-alt"></i> Most Downloaded Quotes</h4>
+<hr class="mt-0">
+{% for quote in mostDownloadedQuotes %}
+    <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+      <img src="/media/quotes/{{ quote.quote_file }}" width="60px">
+      <p class="m-0">{{ quote.quote_text|truncate(70) }}</p>
+      <h4 class="text-dark m-0"><i class="fas fa-cloud-download-alt"></i> {{ quote.total_downloads }}</h4>
+    </li>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock content %}

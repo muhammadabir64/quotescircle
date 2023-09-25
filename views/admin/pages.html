@@ -1,0 +1,89 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard - Pages{% endblock title %}
+{% block content %}
+<div class="row">
+<div class="col-12 text-center mb-4">
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_new_page_modal">Write a new page...<i class="fas fa-marker"></i></button>
+<hr class="mb-0">
+</div>
+{% for page in pages %}
+<div class="col col-md-3">
+<div class="card card-body pb-2">
+    <h4 class="text-center mb-0">{{ page.title }}</h4>
+    <hr>
+    <div class="d-flex justify-content-around mb-2">
+        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edit_page_{{ page.id }}"><i class="fas fa-edit"></i> Edit</button>
+        <form action="/admin/pages_delete" method="POST">
+          <input type="hidden" name="id" value="{{ page.id }}">
+          <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Remove</button>
+        </form>
+    </div>
+</div>
+</div>
+<div class="modal fade" id="edit_page_{{ page.id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <form action="/admin/pages_edit" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+                <input type="text" name="title" class="form-control mb-2" placeholder="Title" value="{{ page.title }}">
+                <input type="text" name="slug" class="form-control" placeholder="Slug" value="{{ page.slug }}">
+            </div>
+            <div>
+                <textarea id="edit_page_editor_{{ page.id }}" name="content">{{ page.content }}</textarea>
+            </div>
+            <input type="hidden" name="id" value="{{ page.id }}">
+          </div>
+          <div class="modal-footer d-flex justify-content-between py-1">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+<script>
+CKEDITOR.replace("edit_page_editor_{{ page.id }}", {
+  height: 300
+});
+</script>
+{% endfor %}
+</div>
+
+<div class="modal fade" id="add_new_page_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <form action="/admin/pages_add" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+                <input type="text" name="title" id="title_add" class="form-control mb-2" placeholder="Title" required>
+                <input type="text" name="slug" id="slug_add" class="form-control" placeholder="Slug" required>
+            </div>
+            <div>
+                <textarea id="new_page_editor" name="content"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-between py-1">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success btn-sm">Publish Now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+CKEDITOR.replace("new_page_editor", {
+  height: 300
+});
+$(function(){
+    const $title = $("#title_add");
+    const $slug = $("#slug_add");
+    $title.on("keyup", function(){
+      const slug = $title.val().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+      $slug.val(slug);
+    });
+});
+</script>
+{% endblock script %}

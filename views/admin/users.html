@@ -1,0 +1,233 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard - Users List{% endblock title %}
+{% block content %}
+<div class="card card-body">
+<div class="d-flex justify-content-end mb-4">
+<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#add_new_user_modal"><i class="fas fa-user-plus"></i> Add New User</button>
+</div>
+<table id="users_list" class="table table-bordered dt-responsive nowrap text-center w-100">
+<thead>
+    <tr>
+        <th>#</th>
+        <th>Email</th>
+        <th>Permissions</th>
+        <th>Action</th>
+    </tr>
+</thead>
+<tbody>
+{% for user in users %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ user.email }}</td>
+        <td class="d-flex justify-content-around">
+    {% if user.permission_quotes === 1 %}
+        <i class="fas fa-quote-left text-success" title="Quotes Permission Active"></i>
+    {% else %}
+    <i class="fas fa-quote-left text-muted" title="Quotes Permission Inactive"></i>
+    {% endif %}
+    {% if user.permission_authors === 1 %}
+        <i class="fas fa-user-edit text-success" title="Authors Permission Active"></i>
+    {% else %}
+        <i class="fas fa-user-edit text-muted" title="Authors Permission Inactive"></i>
+    {% endif %}
+    {% if user.permission_topics === 1 %}
+        <i class="fas fa-list-ol text-success" title="Topics Permission Active"></i>
+    {% else %}
+        <i class="fas fa-list-ol text-muted" title="Topics Permission Inactive"></i>
+    {% endif %}
+    {% if user.permission_pages === 1 %}
+        <i class="fas fa-file-alt text-success" title="Pages Permission Active"></i>
+    {% else %}
+        <i class="fas fa-file-alt text-muted" title="Pages Permission Inactive"></i>
+    {% endif %}
+    {% if user.permission_users === 1 %}
+        <i class="fas fa-users text-success" title="Users Permission Active"></i>
+    {% else %}
+        <i class="fas fa-users text-muted" title="Users Permission Inactive"></i>
+    {% endif %}
+    {% if user.permission_settings === 1 %}
+        <i class="fas fa-cog text-success" title="Settings Permission Active"></i>
+    {% else %}
+        <i class="fas fa-cog text-muted" title="Settings Permission Inactive"></i>
+    {% endif %}
+        </td>
+        <td>
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#user_edit_{{ user.id }}" title="Edit User Info"><i class="fas fa-user-edit text-info mr-2"></i></a>
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#user_rm_{{ user.id }}" title="Remove This User"><i class="fas fa-user-times text-danger"></i></a>
+
+            <div class="modal fade" id="user_edit_{{ user.id }}" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <form action="/admin/user_edit" method="POST">
+                    <div class="modal-body">
+                      <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ user.email }}">
+                      </div>
+                      <div><small class="text-danger">Set new password or leave it blank</small></div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input type="text" class="form-control" name="password" placeholder="Set new password">
+                      </div>
+                      <h5 class="text-info text-center"><i class="fas fa-user-shield"></i> Permissions</h5>
+                      <hr class="m-0">
+                      <div class="row mt-2 text-left">
+                      <div class="col-6">
+                        <div class="form-check">
+                        {% if user.permission_quotes === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_quotes" name="permission_quotes" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_quotes" name="permission_quotes">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_quotes">Quotes</label>
+                        </div>
+                        <div class="form-check">
+                        {% if user.permission_authors === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_authors" name="permission_authors" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_authors" name="permission_authors">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_authors">Authors</label>
+                        </div>
+                        <div class="form-check">
+                        {% if user.permission_topics === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_topics" name="permission_topics" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_topics" name="permission_topics">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_topics">Topics</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check">
+                        {% if user.permission_pages === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_pages" name="permission_pages" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_pages" name="permission_pages">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_pages">Pages</label>
+                        </div>
+                        <div class="form-check">
+                        {% if user.permission_users === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_users" name="permission_users" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_users" name="permission_users">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_users">Users</label>
+                        </div>
+                        <div class="form-check">
+                        {% if user.permission_settings === 1 %}
+                          <input class="form-check-input" type="checkbox" id="permission_settings" name="permission_settings" checked>
+                        {% else %}
+                          <input class="form-check-input" type="checkbox" id="permission_settings" name="permission_settings">
+                        {% endif %}
+                          <label class="form-check-label" for="permission_settings">Settings</label>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="id" value="{{ user.id }}">
+                    <div class="modal-footer d-flex justify-content-between py-1">
+                      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-success btn-sm">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+          </div>
+            <div class="modal fade" id="user_rm_{{ user.id }}" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                  <div class="modal-content">
+                    <form action="/admin/user_delete" method="POST">
+                      <div class="modal-body">
+                        <h5 class="text-danger text-center"><i class="fas fa-user-times"></i> Are you sure?</h5>
+                        <input type="hidden" name="id" value="{{ user.id }}">
+                      </div>
+                      <div class="modal-footer d-flex justify-content-between py-1">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Yes, Confirm</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<div class="modal fade" id="add_new_user_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-user-plus"></i> Add New User</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="/admin/user_add" method="POST">
+          <div class="modal-body">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              </div>
+              <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              </div>
+              <input type="text" class="form-control" name="password" placeholder="Enter password" required>
+            </div>
+            <h5 class="text-info text-center"><i class="fas fa-user-shield"></i> Permissions</h5>
+            <hr class="m-0">
+            <div class="row mt-2">
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_quotes" name="permission_quotes" value="1">
+                <label class="form-check-label" for="perm_quotes">Quotes</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_authors" name="permission_authors" value="1">
+                <label class="form-check-label" for="perm_authors">Authors</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_topics" name="permission_topics" value="1">
+                <label class="form-check-label" for="perm_topics">Topics</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_pages" name="permission_pages" value="1">
+                <label class="form-check-label" for="perm_pages">Pages</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_users" name="permission_users" value="1">
+                <label class="form-check-label" for="perm_users">Users</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perm_settings" name="permission_settings" value="1">
+                <label class="form-check-label" for="perm_settings">Settings</label>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-between py-1">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$("#users_list").DataTable();
+</script>
+{% endblock script %}

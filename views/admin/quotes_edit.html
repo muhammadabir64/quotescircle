@@ -1,0 +1,118 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Edit - {{ quote.quote_text }}{% endblock title %}
+{% block style %}
+<style>
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #17a2b8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #17a2b8;
+}
+.query_img {
+  height: 250px;
+  cursor: pointer;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="card card-body bg-light">
+<form action="/admin/quotes_edit_handler" method="POST">
+<div class="row">
+<div class="col-md-4 mb-3">
+<div class="row">
+<div class="col-md-8 mb-3">
+<label for="quote_text_field" class="m-0">Quote</label>
+<textarea name="quote_text" class="form-control mb-2" id="quote_text_field" rows="3" placeholder="quote">{{ quote.quote_text }}</textarea>
+<label for="author_field" class="m-0">Author name</label>
+<input type="text" name="author_name" class="form-control" id="author_field" placeholder="Author name" value="{{ quote.author.name }}">
+<input type="hidden" name="author_id" value="{{ quote.authorId }}">
+<input type="hidden" name="quote_id" value="{{ quote.id }}">
+<input type="hidden" name="quote_file" value="{{ quote.quote_file }}">
+</div>
+<div class="col-md-8 mb-3">
+<label for="topics" class="text-dark m-0">Choose Topics <small class="text-muted">(press CTRL to select multiple topics)</small></label>
+<select name="topics[]" class="custom-select" id="topics" multiple>
+  {% for topic in topics %}
+    {% set selected = false %}
+    {% for qtopic in quote.topics %}
+      {% if qtopic.id == topic.id %}
+        {% set selected = true %}
+      {% endif %}
+    {% endfor %}
+    <option value="{{ topic.id }}" {% if selected %}selected{% endif %}>{{ topic.name }}</option>
+  {% endfor %}
+</select>
+<small class="text-muted" id="suggested_tags"></small>
+</div>
+</div>
+</div>
+<div class="col-md-8 mb-3">
+<textarea id="external_links_editor" name="external_links">{{ quote.external_links }}</textarea>
+<input type="url" name="image_url" class="form-control mt-2" id="image_url" placeholder="Image URL (auto generated field)" readonly>
+<small>Current Image: <a href="/media/quotes/{{ quote.quote_file }}" class="text-info" target="_blank"><img src="/media/quotes/{{ quote.quote_file }}" width="20px"> {{ quote.quote_file }}</a></small>
+</div>
+<div class="col-12 text-center">
+<hr class="mt-0 mx-auto w-25">
+<button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+</div>
+</div>
+</form>
+</div>
+<div class="card card-body pb-0">
+<div class="row">
+<div class="col-12 text-center">
+<h5><i class="fas fa-image text-warning"></i> Update Image</h5>
+<hr class="mt-0 mx-auto w-25">
+</div>
+<div class="col-md-6 mx-auto">
+<form id="image_search_form" class="d-flex">
+<input type="text" class="form-control" id="image_search_field" placeholder="Type a keyword for Image..." required>
+<button type="submit" class="btn btn-warning btn-sm" id="image_search_btn"><i class="fas fa-search"></i></button>
+</form>
+</div>
+<div class="col-12">
+<hr class="w-25 mx-auto bg-light">
+<div class="d-flex overflow-auto" id="image_container" style="display: none;"></div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$(document).ready(function(){
+  $('#image_search_form').submit(function(event){
+    event.preventDefault();
+    $("#image_search_btn").html("<img src='/assets/images/loader.gif' width='20px'>");
+    let query = $('#image_search_field').val();
+    $.ajax({
+      url: '/admin/image_fetcher',
+      method: 'POST',
+      data: {query: query},
+      success: function(response){
+        let images = response.hits;
+        $('#image_container').empty();
+        for(let i = 0; i < images.length; i++){
+          let imgSrc = images[i].webformatURL;
+          $('#image_container').append('<img src="' + imgSrc + '" class="img-fluid rounded mr-2 mb-2 query_img">');
+          $('#image_container img:last-child').click(function(){
+            $('#image_url').val(imgSrc);
+          });
+        }
+        $('#image_container').show();
+        $("#image_search_btn").html("<i class='fas fa-search'></i>");
+      }
+    });
+  });
+});
+CKEDITOR.replace("external_links_editor", {
+  height: 200
+});
+</script>
+{% endblock script %}

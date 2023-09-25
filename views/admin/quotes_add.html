@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard - Create a New Quote{% endblock title %}
+{% block style %}
+<style>
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #17a2b8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #17a2b8;
+}
+.query_img {
+  height: 250px;
+  cursor: pointer;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="card card-body bg-light">
+<form action="/admin/quotes_add_handler" method="POST">
+<div class="row">
+<div class="col-md-4 mb-3">
+<div class="row">
+<div class="col-md-8 mb-3 text-center">
+<button type="button" class="btn btn-info btn-sm mb-2" id="quote_generator_btn" onclick="quote_generator()"><i class="fas fa-quote-left"></i> Generate a Quote</button>
+<textarea name="quote_text" class="form-control mb-2" id="quote_text_field" rows="3" placeholder="generated quote..." required></textarea>
+<input type="text" name="author" class="form-control" id="author_field" placeholder="Author name" required>
+</div>
+<div class="col-md-8 mb-3">
+<label for="topics" class="text-dark m-0">Choose Topics <small class="text-muted">(press CTRL to select multiple topics)</small></label>
+<select name="topics[]" class="custom-select" id="topics" multiple>
+{% for topic in topics %}
+  <option value="{{ topic.id }}">{{ topic.name }}</option>
+{% endfor %}
+</select>
+<small class="text-muted" id="suggested_tags"></small>
+</div>
+</div>
+</div>
+<div class="col-md-8 mb-3">
+<textarea id="external_links_editor" name="external_links"></textarea>
+<input type="url" name="image_url" class="form-control mt-2" id="image_url" placeholder="Image URL (auto generated field)" readonly required>
+</div>
+<div class="col-12 text-center">
+<hr class="mt-0 mx-auto w-25">
+<button type="submit" class="btn btn-primary btn-sm">Save &amp; Publish</button>
+</div>
+</div>
+</form>
+</div>
+<div class="card card-body pb-0">
+<div class="row">
+<div class="col-12 text-center">
+<h5><i class="fas fa-image text-warning"></i> Choose an Image</h5>
+<hr class="mt-0 mx-auto w-25">
+</div>
+<div class="col-md-6 mx-auto">
+<form id="image_search_form" class="d-flex">
+<input type="text" class="form-control" id="image_search_field" placeholder="Type a keyword for Image..." required>
+<button type="submit" class="btn btn-warning btn-sm" id="image_search_btn"><i class="fas fa-search"></i></button>
+</form>
+</div>
+<div class="col-12">
+<hr class="w-25 mx-auto bg-light">
+<div class="d-flex overflow-auto" id="image_container" style="display: none;"></div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$(document).ready(function(){
+  $('#image_search_form').submit(function(event){
+    event.preventDefault();
+    $("#image_search_btn").html("<img src='/assets/images/loader.gif' width='20px'>");
+    let query = $('#image_search_field').val();
+    $.ajax({
+      url: '/admin/image_fetcher',
+      method: 'POST',
+      data: {query: query},
+      success: function(response){
+        let images = response.hits;
+        $('#image_container').empty();
+        for(let i = 0; i < images.length; i++){
+          let imgSrc = images[i].webformatURL;
+          $('#image_container').append('<img src="' + imgSrc + '" class="img-fluid rounded mr-2 mb-2 query_img">');
+          $('#image_container img:last-child').click(function(){
+            $('#image_url').val(imgSrc);
+          });
+        }
+        $('#image_container').show();
+        $("#image_search_btn").html("<i class='fas fa-search'></i>");
+      }
+    });
+  });
+});
+function quote_generator(){
+  $("#quote_generator_btn").html("<img src='/assets/images/loader.gif' width='20px'> Generate a Quote");
+  $.ajax({
+    url: '/admin/quote_fetcher',
+    method: 'GET',
+    success: function(response){
+      $("#quote_text_field").html(response.content);
+      $("#author_field").val(response.originator.name);
+      $("#suggested_tags").html("Suggested: "+response.tags.slice(0,5).join(", "));
+      $("#quote_generator_btn").html("<i class='fas fa-quote-left'></i> Generate Again");
+    }
+  });
+};
+CKEDITOR.replace("external_links_editor", {
+  height: 200
+});
+</script>
+{% endblock script %}

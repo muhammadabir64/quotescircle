@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard - Create A Topic{% endblock title %}
+{% block style %}
+<style>
+::-webkit-scrollbar {
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #17a2b8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #17a2b8;
+}
+.query_img {
+  height: 250px;
+  cursor: pointer;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="card card-body bg-light">
+<form action="/admin/topics_add_handler" method="POST">
+<div class="row">
+<div class="col-md-4 mb-3">
+<label for="name" class="text-muted">Type a name for topic...</label>
+<input type="text" class="form-control" name="name" id="name" placeholder="eg: Motivational" required>
+</div>
+<div class="col-md-8 mb-3">
+<label for="thumbnail" class="text-muted">Thumbnail URL <small>(it will generate automatically)</small></label>
+<input type="url" class="form-control" name="thumbnail" id="thumbnail" placeholder="Choose an image" readonly required>
+</div>
+<div class="col-12 text-center">
+<button type="submit" class="btn btn-primary btn-sm">Process to Save</button>
+</div>
+</div>
+</form>
+</div>
+<div class="card card-body bg-dark pb-0">
+<div class="row">
+<div class="col-md-6 mx-auto">
+<form id="image_search_form" class="d-flex">
+<input type="text" class="form-control" id="image_search_field" placeholder="Search for an image..." required>
+<button type="submit" class="btn btn-info btn-sm" id="image_search_btn"><i class="fas fa-search"></i></button>
+</form>
+</div>
+<div class="col-12">
+<hr class="w-25 mx-auto bg-light">
+<div class="d-flex overflow-auto" id="image_container" style="display: none;"></div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$(document).ready(function() {
+  $('#image_search_form').submit(function(event) {
+    event.preventDefault();
+    $("#image_search_btn").html("<img src='/assets/images/loader.gif' width='20px'>");
+    let query = $('#image_search_field').val();
+    $.ajax({
+      url: '/admin/image_fetcher',
+      method: 'POST',
+      data: {query: query},
+      success: function(response) {
+        let images = response.hits;
+        $('#image_container').empty();
+        for (let i = 0; i < images.length; i++) {
+          let imgSrc = images[i].webformatURL;
+          $('#image_container').append('<img src="' + imgSrc + '" class="img-fluid rounded mr-2 mb-2 query_img">');
+          $('#image_container img:last-child').click(function() {
+            $('#thumbnail').val(imgSrc);
+          });
+        }
+        $('#image_container').show();
+        $("#image_search_btn").html("<i class='fas fa-search'></i>");
+      }
+    });
+  });
+});
+</script>
+{% endblock script %}

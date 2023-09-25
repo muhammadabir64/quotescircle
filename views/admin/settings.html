@@ -1,0 +1,110 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard{% endblock title %}
+{% block content %}
+<div class="card card-body">
+<form action="/admin/settings_handler" method="POST" enctype="multipart/form-data">
+<div class="row">
+<div class="col-12 mb-4">
+<span class="text-muted">General</span>
+<hr class="mt-0">
+<div class="row">
+<div class="col-md-4 d-flex flex-column mb-3">
+    <label for="logo" class="m-0">Logo</label>
+    <img src="/media/general/{{ data.logo }}" width="150px" class="my-2">
+    <input type="file" name="logo" id="logo">
+    <input type="hidden" name="logo_val" value="{{ data.logo}}">
+</div>
+<div class="col-md-4 d-flex flex-column mb-3">
+    <label for="favicon" class="m-0">Favicon</label>
+    <img src="/media/general/{{ data.favicon }}" width="25px" class="my-2">
+    <input type="file" name="favicon" id="favicon">
+    <input type="hidden" name="favicon_val" value="{{ data.favicon}}">
+</div>
+<div class="col-md-4 d-flex flex-column mb-3">
+    <label for="header_bg" class="m-0">Header Background</label>
+    <img src="/media/general/{{ data.header_bg }}" width="50px" class="my-2">
+    <input type="file" name="header_bg" id="header_bg">
+    <input type="hidden" name="header_bg_val" value="{{ data.header_bg}}">
+</div>
+<div class="col-md-6 mb-3">
+    <label for="header_slogan" class="m-0">Header Slogan</label>
+    <input type="text" name="header_slogan" class="form-control" id="header_slogan" value="{{ data.header_slogan }}">
+</div>
+<div class="col-md-6 mb-3">
+    <label for="header_text" class="m-0">Header Text</label>
+    <input type="text" name="header_text" class="form-control" id="header_text" value="{{ data.header_text }}">
+</div>
+<div class="col-md-6 mb-3">
+    <label for="copyright" class="m-0">Copyright</label>
+    <input type="text" name="copyright" class="form-control" id="copyright" value="{{ data.copyright }}">
+</div>
+</div>
+</div>
+<div class="col-12">
+<span class="text-muted">SEO Preferences</span>
+<hr class="mt-0">
+<div class="row">
+<div class="col-md-6 mb-3">
+    <label for="ga_id" class="m-0">Google Analytics ID</label>
+    <input type="text" name="ga_id" class="form-control" id="ga_id" value="{{ data.ga_id }}">
+</div>
+<div class="col-md-6 mb-3">
+    <label for="seo_author" class="m-0">Site Author</label>
+    <input type="text" name="seo_author" class="form-control" id="seo_author" value="{{ data.seo_author }}">
+</div>
+<div class="col-md-6 mb-3">
+    <label for="seo_description" class="m-0">Meta Description</label>
+    <textarea name="seo_description" class="form-control" id="seo_description" rows="3">{{ data.seo_description }}</textarea>
+</div>
+<div class="col-md-6 mb-3">
+    <label for="seo_keywords" class="m-0">Meta Keywords</label>
+    <textarea name="seo_keywords" class="form-control" id="seo_keywords" rows="3">{{ data.seo_keywords }}</textarea>
+</div>
+</div>
+</div>
+<div class="col-12 text-center">
+<hr class="w-25">
+<button type="submit" class="btn btn-success">Save Changes</button>
+</div>
+</div>
+</form>
+</div>
+<div class="card card-body">
+<span class="text-muted">Social Links</span>
+<hr class="mt-0">
+<form action="/admin/social_handler" method="POST">
+<div class="row">
+<div class="col-md-8 mx-auto d-flex mb-4">
+<select name="platform" class="custom-select w-75" required>
+  <option selected disabled>Select a platform</option>
+  <option value="fa-facebook">Facebook</option>
+  <option value="fa-instagram">Instagram</option>
+  <option value="fa-twitter">Twitter</option>
+  <option value="fa-pinterest">Pinterest</option>
+  <option value="fa-telegram">Telegram</option>
+  <option value="fa-whatsapp">Whatsapp</option>
+  <option value="fa-tumblr">Tumblr</option>
+  <option value="fa-snapchat">Snapchat</option>
+  <option value="fa-google-plus-g">Google+</option>
+  <option value="fa-github">Github</option>
+  <option value="fa-linkedin-in">Linkedin</option>
+</select>
+<label for="url"></label>
+<input type="url" name="url" class="form-control" placeholder="paste here account url" required>
+<button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle fa-lg"></i></button>
+</div>
+<div class="col-12">
+<div class="row">
+<div class="col-md-4 mx-auto">
+<div class="list-group">
+{% for social in socialIDs %}
+<li class="list-group-item d-flex justify-content-between"><div><i class="fab {{ social.platform }} text-dark mr-2"></i><a href="{{ social.url }}" class="text-info" target="_blank">{{ social.url }}</a></div><a href="/admin/social_remove?id={{ social.id }}" class="text-danger"><i class="fas fa-trash-alt"></i></a></li>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</form>
+</div>
+{% endblock content %}

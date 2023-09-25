@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}QuotesCircle | {{ quote.quote_text }}{% endblock title %}
+{% block style %}
+<style>
+.list-group-item > p{
+    margin: 0;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="container-fluid" style="margin-top: 90px; margin-bottom: 40px;">
+<div class="row">
+<div class="col-md-6 mb-4">
+<div class="card card-body p-0 pb-2">
+    <img class="card-img-top" src="/media/quotes/{{ quote.quote_file}}" alt="{{ quote.quote_text }}">
+    <h5 class="text-center mt-4 mb-3 mx-2"><i class="fas fa-quote-left fa-sm text-muted"></i> {{ quote.quote_text }} <i class="fas fa-quote-right fa-sm text-muted"></i></h5>
+    <h6 class="text-center text-info"><a href="/author?name={{ quote.author.name }}">{{ quote.author.name }}</a></h6>
+</div>
+</div>
+<div class="col-md-6">
+<ul class="list-group mb-4">
+  <li class="list-group-item d-flex">
+    <span class="font-weight-bold text-muted">Info:&nbsp;</span>{{ quote.external_links|safe }}
+  </li>
+  <li class="list-group-item d-flex">
+    <span class="font-weight-bold text-muted">Topics:&nbsp;</span><div style="word-break: break-all;">{% for topic in quote.topics %}<a href="/topic?name={{ topic.name }}">{{ topic.name }}</a>&nbsp;{% endfor %}</div>
+  </li>
+  <li class="list-group-item d-flex">
+    <span class="font-weight-bold text-muted">Publushed:&nbsp;</span>{{ quote.publish_date }}
+  </li>
+  <li class="list-group-item d-flex justify-content-around align-items-center">
+    <a href="/downloader?id={{ quote.id }}" class="d-flex flex-column text-center text-dark">
+        <div><i class="fas fa-cloud-download-alt"></i> Download</div>
+        <small>Total: {{ quote.total_downloads }}</small>
+    </a>
+    <a href="javascript:void(0)" id="vote_btn" data-quote-id="{{ quote.id }}"><i class="far fa-thumbs-up fa-lg"  id="vote_icon"></i> <span id="total_votes_text">{{ quote.total_votes }}</span></a>
+  </li>
+</ul>
+<div class="d-flex justify-content-around">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://quotescircles.com/quote?q={{ quote.id }}" target="_blank">
+        <i class="fab fa-facebook-f"></i> Share on Facebook
+    </a>
+    <a href="https://twitter.com/intent/tweet?url=https://quotescircles.com/quote?q={{ quote.id }}&text=Discover Inspiration. Unleash Your Motivation&via=your_twitter_handle" target="_blank">
+        <i class="fab fa-twitter"></i> Share on Twitter
+    </a>
+    <a href="https://www.linkedin.com/shareArticle?url=https://quotescircles.com/quote?q={{ quote.id }}&title=Quotes Circles" target="_blank">
+        <i class="fab fa-linkedin-in"></i> Share on LinkedIn
+    </a>
+    <a href="https://www.pinterest.com/pin/create/button/?url=https://quotescircles.com/quote?q={{ quote.id }}&media=https://quotescircles.com/media/quotes/{{ quote.quote_file }}&description={{ quote.quote_text}}" target="_blank">
+        <i class="fab fa-pinterest"></i> Pin on Pinterest
+    </a>
+</div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$(document).ready(function(){
+    if(localStorage.getItem("vt{{ quote.id }}")){
+        $("#vote_icon").removeClass("far fa-thumbs-up");
+        $("#vote_icon").addClass("fas fa-thumbs-up");
+    }
+});
+$("#vote_btn").on("click", function() {
+    const id = $(this).data("quote-id");
+    let vote = false;
+    if(localStorage.getItem("vt"+id)){
+        vote = true;
+    }else{
+        vote = false;
+    }
+    $.ajax({
+      url: "/vote",
+      method: "POST",
+      data: {"id": id, "vote": vote},
+      success: function(res) {
+        if(res.status === 0){
+            $("#vote_icon").removeClass("fas fa-thumbs-up");
+            $("#vote_icon").addClass("far fa-thumbs-up");
+            $("#total_votes_text").html(res.total_votes);
+            localStorage.removeItem("vt"+id);
+        }else{
+            $("#vote_icon").removeClass("far fa-thumbs-up");
+            $("#vote_icon").addClass("fas fa-thumbs-up");
+            $("#total_votes_text").html(res.total_votes);
+            localStorage.setItem("vt"+id, true);
+        }
+      }
+    });
+});
+</script>
+{% endblock script %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Welcome to QuotesCircle{% endblock title %}
+{% block style %}
+<style>
+.header_bg{
+  background-image: url("/media/general/{{ settings.header_bg }}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 500px;
+  position: relative;
+}
+.header_bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.header_bg .container {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+}
+.btn .btn-outline-default .btn-sm .btn-rounded .px-3:hover{
+  color: #ffffff;
+  background-color: #2bbbad;
+}
+.news-tile .card-title {
+    position: absolute;
+    bottom: 15px;
+    left: 40px;
+}
+.rgba-stylish-strong {
+    background-color: rgba(62, 69, 81, .5);
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="jumbotron jumbotron-fluid header_bg">
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center flex-column mt-5">
+            <h1 class="display-5 mt-5">{{ settings.header_slogan }}</h1>
+            <form id="search_form" class="w-100 mt-4">
+                <div class="input-group">
+                    <input type="text" id="search_field" class="form-control" placeholder="Search for words of wisdom..." required>
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                </div>
+                <button type="submit" class="d-none">Search</button>
+                <div class="list-group mt-1" id="search_results">
+                </div>
+            </form>
+            <p class="mt-3" id="header_desc_p">{{ settings.header_text }}</p>
+        </div>
+    </div>
+</div>
+<div class="row m-0">
+<div class="col-12 mb-5 mt-2">
+<div class="container">
+<div class="row">
+<div class="col-12 text-center mb-4">
+<h4 class="text-muted">Popular Topics</h4>
+<hr class="mt-0 w-25">
+</div>
+{% for topic in topics %}
+<div class="col-lg-3 col-md-4 col-sm-12">
+  <div class="news-tile view zoom z-depth-1 rounded mb-4">
+    <a href="/topic?name={{ topic.name }}" class="text-white">
+      <img src="/media/topics/{{ topic.thumbnail }}"
+        class="img-fluid rounded-bottom" alt="sample image" style="height: 170px;">
+      <div class="mask rgba-stylish-strong d-flex justify-content-center align-items-center">
+        <div class="text-white text-center py-lg-5 py-0 my-0">
+          <div>
+            <h5 class="text-warning pt-2">{{ topic.Quotes.length }}</h5>
+            <h4 class="font-weight-bold">
+              <strong>{{ topic.name }}</strong>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+{% endfor %}
+{% if topics_length > 12 %}
+  <div class="col-12 text-center">
+    <a href="/topics" class="btn btn-default btn-sm btn-rounded">View All</a>
+  </div>
+{% endif %}
+</div>
+</div>
+</div>
+<div class="col-12 mb-5">
+<div class="container">
+<div class="row">
+<div class="col-12 text-center mt-2 mb-3">
+<h4 class="text-muted">Authors</h4>
+<hr class="mt-0 w-25">
+</div>
+<div class="col-12 text-center">
+{% for author in authors %}
+<a href="/author?name={{ author.name }}" class="btn btn-outline-default btn-sm btn-rounded px-3">{{ author.name }}</a>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$("#search_form").keyup(function(e){
+  e.preventDefault();
+  if($("#search_field").val().length > 2){
+    $.ajax({
+      url: "/search_query",
+      method: "POST",
+      data: {"query": $("#search_field").val()},
+      success: function(res){
+        console.log(res);
+        if(res.status === 'success'){
+          let resultsHtml = res.data.map((item) => {
+            return `<a href="/quote?q=${item.id}" class="list-group-item list-group-item-action py-2 d-flex">
+                      <img src="/media/quotes/${item.quote_file}" class="mr-2" style="width: 60px;">
+                      <div class="d-flex flex-column">
+                        <span>${item.quote_text}</span>
+                        <small class="text-info">${item.author.name}</small>
+                      </div>
+                    </a>`;
+          }).join('');
+          $('#search_results').html(resultsHtml);
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock script %}

@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% block title %}QuotesCircle | Admin Dashboard - Topics List{% endblock title %}
+{% block content %}
+<div class="card card-body">
+<div class="d-flex justify-content-end mb-4">
+<a href="/admin/topics_add" class="btn btn-info btn-sm"><i class="fas fa-list-ol"></i> Add New Topic</a>
+</div>
+<table id="topics_list" class="table table-bordered table-striped table-sm dt-responsive nowrap text-center w-100">
+<thead>
+    <tr>
+        <th>#</th>
+        <th>Thumbnail</th>
+        <th>Name</th>
+        <th>Total Quotes</th>
+        <th>Remove</th>
+    </tr>
+</thead>
+<tbody>
+{% for topic in topics %}
+    <tr>
+        <td class="align-middle">{{ loop.index }}</td>
+        <td><a href="/media/topics/{{ topic.thumbnail }}" target="_blank"><img src="/media/topics/{{ topic.thumbnail }}" width="80px"></a></td>
+        <td class="align-middle">{{ topic.name }}</td>
+        <td class="align-middle">{{ topic.Quotes.length }}</td>
+        <td class="align-middle">
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#topic_rm_{{ topic.id }}" title="Remove This Topic"><i class="fas fa-trash-alt"></i></button>
+            <div class="modal fade" id="topic_rm_{{ topic.id }}" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                  <div class="modal-content">
+                    <form action="/admin/topics_delete" method="POST">
+                      <div class="modal-body">
+                        <h5 class="text-danger text-center"><i class="fas fa-trash-alt"></i> Are you sure?</h5>
+                        <input type="hidden" name="id" value="{{ topic.id }}">
+                        <input type="hidden" name="thumbnail" value="{{ topic.thumbnail }}">
+                      </div>
+                      <div class="modal-footer d-flex justify-content-between py-1">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Yes, Confirm</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+$("#topics_list").DataTable({
+    "lengthMenu": [[25, 50, 100, 170, -1], [25, 50, 100, 170, "All"]],
+    "pageLength": 25
+});
+</script>
+{% endblock script %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}QuotesCircle | {{ authorName }}{% endblock title %}
+{% block content %}
+<div class="container-fluid" style="margin-top: 90px; margin-bottom: 40px;">
+<div class="card card-body">
+<div class="row">
+<div class="col-12">
+    <h4 class="text-center">Quotes of {{ authorName }}</h4>
+    <hr class="w-50 mx-auto mt-0 mb-4">
+    <div class="row">
+    {% for quote in quotes %}
+    <div class="col-lg-3 col-md-4 col-sm-12 mb-4">
+        <div class="card">
+            <a href="/quote?q={{ quote.id }}"><img class="card-img-top" src="/media/quotes/{{ quote.quote_file }}" alt="{{ quote.quote_text }}" height="290px"></a>
+            <div class="card-body pb-0">
+                <h6 class="card-title" style="height: 40px;"><a href="/quote?q={{ quote.id }}" class="text-dark"><i class="fas fa-quote-left fa-sm"></i> {{ quote.quote_text|truncate(100) }} <i class="fas fa-quote-right fa-sm text-muted"></i></a></h6>
+                <div class="d-flex justify-content-between">
+                    <p class="card-text" title="Author"><a href="/author?name={{ quote.author.name }}" class="text-muted"><i class="fas fa-user-edit"></i> {{ quote.author.name }}</a></p>
+                    <div>
+                        <a href="/downloader?id={{ quote.id }}" class="text-dark mr-2" title="Donwload this quote"><i class="fas fa-cloud-download-alt"></i></a>
+                        <a href="javascript:void(0)" title="Vote this quote" id="vote_btn{{ quote.id }}">
+                            <i class="far fa-thumbs-up" id="vote_icon{{ quote.id }}"></i>
+                            <span class="text-muted" id="total_votes_text{{ quote.id }}">{{ quote.total_votes }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+            if(localStorage.getItem("vt{{ quote.id }}")){
+                const voteIcon = document.getElementById("vote_icon{{ quote.id }}");
+                voteIcon.classList.remove("far");
+                voteIcon.classList.add("fas");
+            }
+            });
+            $("#vote_btn{{ quote.id }}").on("click", function() {
+                let vote = false;
+                if(localStorage.getItem("vt{{ quote.id }}")){
+                    vote = true;
+                }else{
+                    vote = false;
+                }
+                $.ajax({
+                url: "/vote",
+                method: "POST",
+                data: {"id": "{{ quote.id }}", "vote": vote},
+                success: function(res) {
+                    if(res.status === 0){
+                        $("#vote_icon{{ quote.id }}").removeClass("fas fa-thumbs-up");
+                        $("#vote_icon{{ quote.id }}").addClass("far fa-thumbs-up");
+                        $("#total_votes_text{{ quote.id }}").html(res.total_votes);
+                        localStorage.removeItem("vt{{ quote.id }}");
+                    }else{
+                        $("#vote_icon{{ quote.id }}").removeClass("far fa-thumbs-up");
+                        $("#vote_icon{{ quote.id }}").addClass("fas fa-thumbs-up");
+                        $("#total_votes_text{{ quote.id }}").html(res.total_votes);
+                        localStorage.setItem("vt{{ quote.id }}", true);
+                    }
+                }
+                });
+            });
+        </script>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock content %}
