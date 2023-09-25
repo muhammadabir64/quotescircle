@@ -8,6 +8,6 @@ email: admin@gmail.com
 password: pass123
 ```
 #### Preview
-![Capture1](https://github.com/muhammadabir64/quotescircle/assets/51321911/e3ecc7be-d625-4968-8cdf-a35095bae328)
-![Capture2](https://github.com/muhammadabir64/quotescircle/assets/51321911/3a4212b0-4374-42f5-8a40-9aa279101edb)
-![Capture3](https://github.com/muhammadabir64/quotescircle/assets/51321911/51b1c159-40a1-4f5b-ac94-033ea279a7c1)
+![Capture1](https://github.com/muhammadabir64/quotescircle/assets/51321911/97cdc900-dbdd-4f19-acb9-8104694ec061)
+![Capture2](https://github.com/muhammadabir64/quotescircle/assets/51321911/4b5484b7-770e-4fab-a256-614e8593132b)
+![Capture3](https://github.com/muhammadabir64/quotescircle/assets/51321911/e64f5bb4-a68f-43a6-b95c-3c325ac2e12c)
