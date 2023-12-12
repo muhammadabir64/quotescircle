@@ -8,7 +8,12 @@ email: admin@gmail.com
 password: pass123
 ```
 #### Preview
-![Capture1](https://github.com/muhammadabir64/muhammadabir64/assets/51321911/2e3dfbbf-a764-4a5b-95cb-5b636121a6bc)
-![Capture2](https://github.com/muhammadabir64/muhammadabir64/assets/51321911/ddccefdc-6e99-4e71-94fa-616933dff5c2)
-![Capture3](https://github.com/muhammadabir64/muhammadabir64/assets/51321911/47d14c0f-e8ff-4713-ba01-a58c8e32a9b4)
-![Capture4](https://github.com/muhammadabir64/muhammadabir64/assets/51321911/f3811c1b-5089-47ab-83c1-db75b867aafc)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/0904535b-11ac-4176-b43d-116bdb21cd54)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/d3ec7c72-cfe3-4266-af2a-cc0a7d99f7fb)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/56095b10-be4c-492c-a5ee-11cceb2c1222)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/57353943-3bf3-4160-bbc2-90974d7ef0ae)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/cc160a3b-96ec-4dc7-a06b-8a9e7c8f3a0b)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/6408b72a-4b2d-421b-9b34-e4757de19dee)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/d6625c19-fb45-45f7-8760-002b2818b447)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/68f53278-6e76-4af8-a63e-ac21a755331d)
+![image](https://github.com/muhammadabir64/quotescircle/assets/51321911/f7aac3bf-1e38-4194-85e7-184167bc76bb)
